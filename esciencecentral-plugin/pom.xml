@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--                                                                                                          -->
+<!-- Copyright (c) 2014: Arjuna Technologies Limited, Newcastle-upon-Tyne, England.                           -->
+<!--                     Newcastle University, Newcastle-upon-Tyne, England.                                  -->
+<!--                     Red Hat Middleware LLC, Newcastle-upon-Tyne, England.                                -->
+<!--                                                                                                          -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.risbic.dbplugins</groupId>
+        <artifactId>esciencecentral</artifactId>
+        <version>1.0.0p1m1</version>
+    </parent>
+
+    <artifactId>esciencecentral-plugin</artifactId>
+
+    <packaging>ejb</packaging>
+
+    <name>e-Science Central DataBroker Plugin</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.connexience</groupId>
+            <artifactId>api-model</artifactId>
+            <version>${version.com.connexience}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.arjuna.databroker</groupId>
+            <artifactId>data-common</artifactId>
+            <version>${version.com.arjuna.databroker}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
