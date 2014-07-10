@@ -37,22 +37,11 @@ public class EscFactoriesSetup {
 
 	@PostConstruct
 	public void setup() {
-		EscDataProcessorFactory escDataProcessorFactory = new EscDataProcessorFactory(PROCESSOR_FACTORY_NAME, Collections.<String, String>emptyMap());
-
-		EscFileDataSourceFactory escFileDataSourceFactory = new EscFileDataSourceFactory(FILE_SOURCE_FACTORY_NAME, Collections.<String, String>emptyMap());
-
-		EscFileDataServiceFactory escFileDataServiceFactory = new EscFileDataServiceFactory(FILE_SERVICE_FACTORY_NAME, Collections.<String, String>emptyMap());
-
-		EscDataSetDataSourceFactory escDataSetDataSourceFactory = new EscDataSetDataSourceFactory(DATASET_SOURCE_FACTORY_NAME, Collections.<String,String>emptyMap());
-
-		EscDataSetDataServiceFactory escDataSetDataServiceFactory = new EscDataSetDataServiceFactory(DATASET_SERVICE_FACTORY_NAME, Collections.<String,String>emptyMap());
-
-		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(escDataProcessorFactory);
-		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(escFileDataSourceFactory);
-		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(escFileDataServiceFactory);
-		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(escDataSetDataSourceFactory);
-		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(escDataSetDataServiceFactory);
-
+		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(new EscDataProcessorFactory(PROCESSOR_FACTORY_NAME, Collections.<String, String>emptyMap()));
+		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(new EscFileDataSourceFactory(FILE_SOURCE_FACTORY_NAME, Collections.<String, String>emptyMap()));
+		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(new EscFileDataServiceFactory(FILE_SERVICE_FACTORY_NAME, Collections.<String, String>emptyMap()));
+		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(new EscDataSetDataSourceFactory(DATASET_SOURCE_FACTORY_NAME, Collections.<String, String>emptyMap()));
+		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(new EscDataSetDataServiceFactory(DATASET_SERVICE_FACTORY_NAME, Collections.<String, String>emptyMap()));
 	}
 
 	@PreDestroy
