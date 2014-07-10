@@ -3,14 +3,14 @@
  *                     Newcastle University, Newcastle-upon-Tyne, England;
  *                     Red Hat Middleware LLC, Newcastle-upon-Tyne, England. All rights reserved.
  */
-package org.risbic.dbplugins.esciencecentral.source;
+package org.risbic.plugins.esc.source.file;
 
 import com.arjuna.databroker.data.DataProvider;
 import com.arjuna.databroker.data.DataSource;
 import com.connexience.api.StorageClient;
 import com.connexience.api.model.EscDocument;
 import com.connexience.api.model.EscFolder;
-import org.risbic.dbplugins.esciencecentral.intraconnect.SimpleProvider;
+import org.risbic.plugins.esc.intraconnect.SimpleProvider;
 
 import java.util.Collection;
 import java.util.Collections;

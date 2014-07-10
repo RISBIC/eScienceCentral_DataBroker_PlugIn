@@ -3,11 +3,11 @@
  *                     Newcastle University, Newcastle-upon-Tyne, England;
  *                     Red Hat Middleware LLC, Newcastle-upon-Tyne, England. All rights reserved.
  */
-package org.risbic.dbplugins.esciencecentral.processor;
+package org.risbic.plugins.esc.service.dataset;
 
 import com.arjuna.databroker.data.DataFlowNode;
 import com.arjuna.databroker.data.DataFlowNodeFactory;
-import com.arjuna.databroker.data.DataProcessor;
+import com.arjuna.databroker.data.DataService;
 import com.arjuna.databroker.data.InvalidClassException;
 import com.arjuna.databroker.data.InvalidMetaPropertyException;
 import com.arjuna.databroker.data.InvalidNameException;
@@ -20,12 +20,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class EscDataProcessorFactory implements DataFlowNodeFactory {
+public class EscDataSetDataServiceFactory implements DataFlowNodeFactory {
 	private String _name;
 
 	private Map<String, String> _properties;
 
-	public EscDataProcessorFactory(String name, Map<String, String> properties) {
+	public EscDataSetDataServiceFactory(String name, Map<String, String> properties) {
 		_name = name;
 		_properties = properties;
 	}
@@ -44,7 +44,7 @@ public class EscDataProcessorFactory implements DataFlowNodeFactory {
 	public List<Class<? extends DataFlowNode>> getClasses() {
 		List<Class<? extends DataFlowNode>> classes = new LinkedList<>();
 
-		classes.add(DataProcessor.class);
+		classes.add(DataService.class);
 
 		return classes;
 	}
@@ -58,12 +58,11 @@ public class EscDataProcessorFactory implements DataFlowNodeFactory {
 	public <T extends DataFlowNode> List<String> getPropertyNames(Class<T> dataFlowNodeClass, Map<String, String> metaProperties) throws InvalidClassException, InvalidMetaPropertyException, MissingMetaPropertyException {
 		List<String> propertyNames = new LinkedList<>();
 
-		propertyNames.add(EscDataProcessor.SERVERHOST_PROPERTYNAME);
-		propertyNames.add(EscDataProcessor.SERVERPORT_PROPERTYNAME);
-		propertyNames.add(EscDataProcessor.USERNAME_PROPERTYNAME);
-		propertyNames.add(EscDataProcessor.USERPASSWORD_PROPERTYNAME);
-		propertyNames.add(EscDataProcessor.WORKFLOWNAME_PROPERTYNAME);
-		propertyNames.add(EscDataProcessor.RESULTSFILENAME_PROPERTYNAME);
+		propertyNames.add(EscDataSetDataService.SERVERHOST_PROPERTYNAME);
+		propertyNames.add(EscDataSetDataService.SERVERPORT_PROPERTYNAME);
+		propertyNames.add(EscDataSetDataService.USERNAME_PROPERTYNAME);
+		propertyNames.add(EscDataSetDataService.USERPASSWORD_PROPERTYNAME);
+		propertyNames.add(EscDataSetDataService.DATAFILENAME_PROPERTYNAME);
 
 		return propertyNames;
 	}
@@ -71,8 +70,8 @@ public class EscDataProcessorFactory implements DataFlowNodeFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends DataFlowNode> T createDataFlowNode(String name, Class<T> dataFlowNodeClass, Map<String, String> metaProperties, Map<String, String> properties) throws InvalidNameException, InvalidPropertyException, MissingPropertyException {
-		if (dataFlowNodeClass.isAssignableFrom(EscDataProcessor.class)) {
-			return (T) new EscDataProcessor(name, properties);
+		if (dataFlowNodeClass.isAssignableFrom(EscDataSetDataService.class)) {
+			return (T) new EscDataSetDataService(name, properties);
 		} else {
 			return null;
 		}

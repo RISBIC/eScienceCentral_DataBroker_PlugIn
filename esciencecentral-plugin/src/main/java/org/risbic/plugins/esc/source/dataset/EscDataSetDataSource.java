@@ -3,11 +3,14 @@
  *                     Newcastle University, Newcastle-upon-Tyne, England;
  *                     Red Hat Middleware LLC, Newcastle-upon-Tyne, England. All rights reserved.
  */
-package org.risbic.dbplugins.esciencecentral.source;
+package org.risbic.plugins.esc.source.dataset;
 
 import com.arjuna.databroker.data.DataProvider;
 import com.arjuna.databroker.data.DataSource;
-import org.risbic.dbplugins.esciencecentral.intraconnect.SimpleProvider;
+import com.connexience.api.StorageClient;
+import com.connexience.api.model.EscDocument;
+import com.connexience.api.model.EscFolder;
+import org.risbic.plugins.esc.intraconnect.SimpleProvider;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -42,7 +45,7 @@ public class EscDataSetDataSource implements DataSource {
 
 		// TODO: make this periodic
 		// TODO: make this check for new latest version and push through provider
-		getDatasetData();
+		getFileData();
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class EscDataSetDataSource implements DataSource {
 		return Collections.unmodifiableMap(_properties);
 	}
 
-	public void getDatasetData() {
+	public void getFileData() {
 		try {
 			String serverHost = _properties.get(SERVERHOST_PROPERTYNAME);
 			Integer serverPost = Integer.parseInt(_properties.get(SERVERPORT_PROPERTYNAME));
@@ -63,7 +66,20 @@ public class EscDataSetDataSource implements DataSource {
 			String userPassword = _properties.get(USERPASSWORD_PROPERTYNAME);
 			String dataFileName = _properties.get(DATAFILENAME_PROPERTYNAME);
 
-			// TODO: Get something out of a data set
+			StorageClient storageClient = new StorageClient(serverHost, serverPost, false, userName, userPassword);
+
+			// Upload the data to document in home folder
+			EscFolder homeFolder = storageClient.homeFolder();
+			EscDocument[] documents = storageClient.folderDocuments(homeFolder.getId());
+
+			logger.info("Name [" + dataFileName + "]");
+
+			for (final EscDocument escDocument : documents) {
+				logger.info("Document [id: " + escDocument.getId() + ", name: " + escDocument.getName() + "]");
+
+				// emit the "file" (todo: emit file contents)
+				_provider.produce("Document [id: " + escDocument.getId() + ", name: " + escDocument.getName() + "]");
+			}
 		} catch (Exception exception) {
 			logger.log(Level.WARNING, "Unexpected problem while accessing eSC file", exception);
 		}

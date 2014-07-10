@@ -3,10 +3,11 @@
  *                     Newcastle University, Newcastle-upon-Tyne, England;
  *                     Red Hat Middleware LLC, Newcastle-upon-Tyne, England. All rights reserved.
  */
-package org.risbic.dbplugins.esciencecentral.service;
+package org.risbic.plugins.esc.service.file;
 
 import com.arjuna.databroker.data.DataFlowNode;
 import com.arjuna.databroker.data.DataFlowNodeFactory;
+import com.arjuna.databroker.data.DataService;
 import com.arjuna.databroker.data.InvalidClassException;
 import com.arjuna.databroker.data.InvalidMetaPropertyException;
 import com.arjuna.databroker.data.InvalidNameException;
@@ -19,12 +20,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class EscDataServiceFactory implements DataFlowNodeFactory {
+public class EscFileDataServiceFactory implements DataFlowNodeFactory {
 	private String _name;
 
 	private Map<String, String> _properties;
 
-	public EscDataServiceFactory(String name, Map<String, String> properties) {
+	public EscFileDataServiceFactory(String name, Map<String, String> properties) {
 		_name = name;
 		_properties = properties;
 	}
@@ -43,8 +44,7 @@ public class EscDataServiceFactory implements DataFlowNodeFactory {
 	public List<Class<? extends DataFlowNode>> getClasses() {
 		List<Class<? extends DataFlowNode>> classes = new LinkedList<>();
 
-		classes.add(EscFileDataService.class);
-		classes.add(EscDataSetDataService.class);
+		classes.add(DataService.class);
 
 		return classes;
 	}
@@ -72,8 +72,6 @@ public class EscDataServiceFactory implements DataFlowNodeFactory {
 	public <T extends DataFlowNode> T createDataFlowNode(String name, Class<T> dataFlowNodeClass, Map<String, String> metaProperties, Map<String, String> properties) throws InvalidNameException, InvalidPropertyException, MissingPropertyException {
 		if (dataFlowNodeClass.isAssignableFrom(EscFileDataService.class)) {
 			return (T) new EscFileDataService(name, properties);
-		} else if (dataFlowNodeClass.isAssignableFrom(EscDataSetDataService.class)) {
-			return (T) new EscDataSetDataService(name, properties);
 		} else {
 			return null;
 		}

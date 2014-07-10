@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2014, Newcastle University, Newcastle-upon-Tyne, England. All rights reserved.
  */
-package org.risbic.dbplugins.esciencecentral.intraconnect;
+package org.risbic.plugins.esc.intraconnect;
 
 import com.arjuna.databroker.data.DataConsumer;
 import com.arjuna.databroker.data.DataFlowNode;

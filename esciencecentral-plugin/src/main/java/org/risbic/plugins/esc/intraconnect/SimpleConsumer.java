@@ -1,4 +1,4 @@
-package org.risbic.dbplugins.esciencecentral.intraconnect;
+package org.risbic.plugins.esc.intraconnect;
 
 import com.arjuna.databroker.data.DataConsumer;
 import com.arjuna.databroker.data.DataFlowNode;

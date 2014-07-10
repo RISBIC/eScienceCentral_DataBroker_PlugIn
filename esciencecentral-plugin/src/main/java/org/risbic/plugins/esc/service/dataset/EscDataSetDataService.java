@@ -3,14 +3,20 @@
  *                     Newcastle University, Newcastle-upon-Tyne, England;
  *                     Red Hat Middleware LLC, Newcastle-upon-Tyne, England. All rights reserved.
  */
-package org.risbic.dbplugins.esciencecentral.service;
+package org.risbic.plugins.esc.service.dataset;
 
 import com.arjuna.databroker.data.DataConsumer;
 import com.arjuna.databroker.data.DataProvider;
 import com.arjuna.databroker.data.DataService;
-import org.risbic.dbplugins.esciencecentral.intraconnect.SimpleConsumer;
-import org.risbic.dbplugins.esciencecentral.intraconnect.SimpleProvider;
+import com.connexience.api.StorageClient;
+import com.connexience.api.model.EscDocument;
+import com.connexience.api.model.EscFolder;
+import org.risbic.plugins.esc.intraconnect.SimpleConsumer;
+import org.risbic.plugins.esc.intraconnect.SimpleProvider;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -65,7 +71,15 @@ public class EscDataSetDataService implements DataService {
 			String userPassword = _properties.get(USERPASSWORD_PROPERTYNAME);
 			String dataFileName = _properties.get(DATAFILENAME_PROPERTYNAME);
 
-			// TODO: Connect to eSC and store something in a data set
+			StorageClient storageClient = new StorageClient(serverHost, serverPost, false, userName, userPassword);
+
+			// Upload the data to document in home folder
+			EscFolder homeFolder = storageClient.homeFolder();
+			EscDocument document = storageClient.createDocumentInFolder(homeFolder.getId(), dataFileName);
+			InputStream dataStream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
+			storageClient.upload(document, dataStream, data.length());
+
+			dataStream.close();
 		} catch (Exception exception) {
 			logger.log(Level.WARNING, "Unexpected problem while store workflow data file", exception);
 		}
