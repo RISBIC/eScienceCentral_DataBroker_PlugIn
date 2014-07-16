@@ -58,11 +58,11 @@ public class EscDataSetDataServiceFactory implements DataFlowNodeFactory {
 	public <T extends DataFlowNode> List<String> getPropertyNames(Class<T> dataFlowNodeClass, Map<String, String> metaProperties) throws InvalidClassException, InvalidMetaPropertyException, MissingMetaPropertyException {
 		List<String> propertyNames = new LinkedList<>();
 
-		propertyNames.add(EscDataSetDataService.SERVERHOST_PROPERTYNAME);
-		propertyNames.add(EscDataSetDataService.SERVERPORT_PROPERTYNAME);
-		propertyNames.add(EscDataSetDataService.USERNAME_PROPERTYNAME);
-		propertyNames.add(EscDataSetDataService.USERPASSWORD_PROPERTYNAME);
-		propertyNames.add(EscDataSetDataService.DATAFILENAME_PROPERTYNAME);
+		propertyNames.add(EscDataSetDataService.SERVER_HOST);
+		propertyNames.add(EscDataSetDataService.SERVER_PORT);
+		propertyNames.add(EscDataSetDataService.ESC_USER);
+		propertyNames.add(EscDataSetDataService.ESC_PASSWORD);
+		propertyNames.add(EscDataSetDataService.DATA_SET_NAME);
 
 		return propertyNames;
 	}

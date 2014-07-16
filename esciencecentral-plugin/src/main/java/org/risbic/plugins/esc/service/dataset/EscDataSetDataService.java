@@ -8,15 +8,12 @@ package org.risbic.plugins.esc.service.dataset;
 import com.arjuna.databroker.data.DataConsumer;
 import com.arjuna.databroker.data.DataProvider;
 import com.arjuna.databroker.data.DataService;
-import com.connexience.api.StorageClient;
-import com.connexience.api.model.EscDocument;
-import com.connexience.api.model.EscFolder;
+import com.connexience.api.DatasetClient;
+import com.connexience.api.model.EscDataset;
+import com.connexience.api.model.EscDatasetItem;
 import org.risbic.plugins.esc.intraconnect.SimpleConsumer;
 import org.risbic.plugins.esc.intraconnect.SimpleProvider;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,15 +25,15 @@ import java.util.logging.Logger;
 public class EscDataSetDataService implements DataService {
 	private static final Logger logger = Logger.getLogger(EscDataSetDataService.class.getName());
 
-	public static final String SERVERHOST_PROPERTYNAME = "Server Host";
+	public static final String SERVER_HOST = "Server Host";
 
-	public static final String SERVERPORT_PROPERTYNAME = "Server Port";
+	public static final String SERVER_PORT = "Server Port";
 
-	public static final String USERNAME_PROPERTYNAME = "User Name";
+	public static final String ESC_USER = "User Name";
 
-	public static final String USERPASSWORD_PROPERTYNAME = "User Password";
+	public static final String ESC_PASSWORD = "User Password";
 
-	public static final String DATAFILENAME_PROPERTYNAME = "Data File Name";
+	public static final String DATA_SET_NAME = "Data Set Name";
 
 	private String _name;
 
@@ -49,6 +46,7 @@ public class EscDataSetDataService implements DataService {
 	public EscDataSetDataService(String name, Map<String, String> properties) {
 		_name = name;
 		_properties = properties;
+
 		_consumer = new SimpleConsumer<>(this, "consume", String.class);
 		_provider = new SimpleProvider<>(this);
 	}
@@ -65,21 +63,22 @@ public class EscDataSetDataService implements DataService {
 
 	public void consume(String data) {
 		try {
-			String serverHost = _properties.get(SERVERHOST_PROPERTYNAME);
-			Integer serverPost = Integer.parseInt(_properties.get(SERVERPORT_PROPERTYNAME));
-			String userName = _properties.get(USERNAME_PROPERTYNAME);
-			String userPassword = _properties.get(USERPASSWORD_PROPERTYNAME);
-			String dataFileName = _properties.get(DATAFILENAME_PROPERTYNAME);
+			String serverHost = _properties.get(SERVER_HOST);
+			Integer serverPost = Integer.parseInt(_properties.get(SERVER_PORT));
+			String userName = _properties.get(ESC_USER);
+			String userPassword = _properties.get(ESC_PASSWORD);
+			String dataSetName = _properties.get(DATA_SET_NAME);
 
-			StorageClient storageClient = new StorageClient(serverHost, serverPost, false, userName, userPassword);
+			DatasetClient datasetClient = new DatasetClient(serverHost, serverPost, false, userName, userPassword);
 
-			// Upload the data to document in home folder
-			EscFolder homeFolder = storageClient.homeFolder();
-			EscDocument document = storageClient.createDocumentInFolder(homeFolder.getId(), dataFileName);
-			InputStream dataStream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
-			storageClient.upload(document, dataStream, data.length());
+			final EscDataset dataset = datasetClient.getNamedDataset(dataSetName);
+			final EscDatasetItem[] items = datasetClient.listDatasetContents(dataset.getId());
 
-			dataStream.close();
+			if (items.length > 0) {
+				final EscDatasetItem item = items[0];
+
+				datasetClient.appendToMultipleValueDatasetItem(dataset.getId(), item.getName(), "{\"data\":\"" + data + "\"}");
+			}
 		} catch (Exception exception) {
 			logger.log(Level.WARNING, "Unexpected problem while store workflow data file", exception);
 		}
