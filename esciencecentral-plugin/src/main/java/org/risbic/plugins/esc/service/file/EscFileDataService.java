@@ -76,9 +76,10 @@ public class EscFileDataService implements DataService {
 			// Upload the data to document in home folder
 			EscFolder homeFolder = storageClient.homeFolder();
 			EscDocument document = storageClient.createDocumentInFolder(homeFolder.getId(), dataFileName);
+
+			// Write contents and close
 			InputStream dataStream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
 			storageClient.upload(document, dataStream, data.length());
-
 			dataStream.close();
 		} catch (Exception exception) {
 			logger.log(Level.WARNING, "Unexpected problem while store workflow data file", exception);

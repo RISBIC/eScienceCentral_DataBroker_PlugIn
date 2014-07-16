@@ -12,6 +12,7 @@ import com.connexience.api.model.EscDocument;
 import com.connexience.api.model.EscFolder;
 import org.risbic.plugins.esc.intraconnect.SimpleProvider;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,9 +44,8 @@ public class EscFileDataSource implements DataSource {
 		_name = name;
 		_properties = properties;
 
-		// TODO: make this periodic
-		// TODO: make this check for new latest version and push through provider
-		getFileData();
+		// TODO: Make this periodic / based on latest version
+		produce();
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class EscFileDataSource implements DataSource {
 		return Collections.unmodifiableMap(_properties);
 	}
 
-	public void getFileData() {
+	public void produce() {
 		try {
 			String serverHost = _properties.get(SERVERHOST_PROPERTYNAME);
 			Integer serverPost = Integer.parseInt(_properties.get(SERVERPORT_PROPERTYNAME));
@@ -72,13 +72,15 @@ public class EscFileDataSource implements DataSource {
 			EscFolder homeFolder = storageClient.homeFolder();
 			EscDocument[] documents = storageClient.folderDocuments(homeFolder.getId());
 
-			logger.info("Name [" + dataFileName + "]");
-
 			for (final EscDocument escDocument : documents) {
-				logger.info("Document [id: " + escDocument.getId() + ", name: " + escDocument.getName() + "]");
+				if (dataFileName.equals(escDocument.getName())) {
 
-				// emit the "file" (todo: emit file contents)
-				_provider.produce("Document [id: " + escDocument.getId() + ", name: " + escDocument.getName() + "]");
+					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+					storageClient.download(escDocument, outputStream);
+
+					_provider.produce(outputStream.toString());
+				}
 			}
 		} catch (Exception exception) {
 			logger.log(Level.WARNING, "Unexpected problem while accessing eSC file", exception);
