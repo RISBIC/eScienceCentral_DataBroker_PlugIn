@@ -6,13 +6,19 @@
 package org.risbic.plugins.esc.service.dataset;
 
 import com.arjuna.databroker.data.DataConsumer;
+import com.arjuna.databroker.data.DataFlow;
 import com.arjuna.databroker.data.DataProvider;
 import com.arjuna.databroker.data.DataService;
+import com.arjuna.databroker.data.IllegalStateException;
+import com.arjuna.databroker.data.InvalidDataFlowException;
+import com.arjuna.databroker.data.InvalidNameException;
+import com.arjuna.databroker.data.InvalidPropertyException;
+import com.arjuna.databroker.data.MissingPropertyException;
+import com.arjuna.databroker.data.jee.annotation.DataConsumerInjection;
+import com.arjuna.databroker.data.jee.annotation.DataProviderInjection;
 import com.connexience.api.DatasetClient;
 import com.connexience.api.model.EscDataset;
 import com.connexience.api.model.EscDatasetItem;
-import org.risbic.plugins.esc.intraconnect.SimpleConsumer;
-import org.risbic.plugins.esc.intraconnect.SimpleProvider;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -39,17 +45,19 @@ public class EscDataSetDataService implements DataService {
 
 	private Map<String, String> _properties;
 
+	private DataFlow _dataFlow;
+
+	@DataConsumerInjection(methodName="consume")
 	private DataConsumer<String> _consumer;
 
+	@DataProviderInjection
 	private DataProvider<String> _provider;
 
 	public EscDataSetDataService(String name, Map<String, String> properties) {
 		_name = name;
 		_properties = properties;
-
-		_consumer = new SimpleConsumer<>(this, "consume", String.class);
-		_provider = new SimpleProvider<>(this);
 	}
+
 
 	@Override
 	public String getName() {
@@ -57,8 +65,32 @@ public class EscDataSetDataService implements DataService {
 	}
 
 	@Override
+	public void setName(String name) throws IllegalStateException,
+			InvalidNameException {
+		_name = name;
+	}
+
+	@Override
 	public Map<String, String> getProperties() {
 		return Collections.unmodifiableMap(_properties);
+	}
+
+	@Override
+	public void setProperties(Map<String, String> properties)
+			throws IllegalStateException, InvalidPropertyException,
+			MissingPropertyException {
+		_properties = properties;		
+	}
+
+	@Override
+	public DataFlow getDataFlow() {
+		return _dataFlow;
+	}
+
+	@Override
+	public void setDataFlow(DataFlow dataFlow) throws IllegalStateException,
+			InvalidDataFlowException {
+		_dataFlow = dataFlow;
 	}
 
 	public void consume(String data) {

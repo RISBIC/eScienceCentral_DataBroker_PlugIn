@@ -5,13 +5,20 @@
  */
 package org.risbic.plugins.esc.source.dataset;
 
+import com.arjuna.databroker.data.DataConsumer;
+import com.arjuna.databroker.data.DataFlow;
 import com.arjuna.databroker.data.DataProvider;
 import com.arjuna.databroker.data.DataSource;
+import com.arjuna.databroker.data.IllegalStateException;
+import com.arjuna.databroker.data.InvalidDataFlowException;
+import com.arjuna.databroker.data.InvalidNameException;
+import com.arjuna.databroker.data.InvalidPropertyException;
+import com.arjuna.databroker.data.MissingPropertyException;
+import com.arjuna.databroker.data.jee.annotation.DataConsumerInjection;
+import com.arjuna.databroker.data.jee.annotation.DataProviderInjection;
 import com.connexience.api.DatasetClient;
 import com.connexience.api.model.EscDataset;
 import com.connexience.api.model.EscDatasetItem;
-import org.risbic.plugins.esc.intraconnect.SimpleProvider;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,8 +43,14 @@ public class EscDataSetDataSource implements DataSource {
 	private String _name;
 
 	private Map<String, String> _properties;
+	
+	private DataFlow _dataFlow;
 
-	private SimpleProvider<String> _provider = new SimpleProvider<>(this);
+	@DataConsumerInjection(methodName="consume")
+	private DataConsumer<String> _consumer;
+
+	@DataProviderInjection
+	private DataProvider<String> _provider;
 
 	public EscDataSetDataSource(String name, Map<String, String> properties) {
 		_name = name;
@@ -54,8 +67,32 @@ public class EscDataSetDataSource implements DataSource {
 	}
 
 	@Override
+	public void setName(String name) throws IllegalStateException,
+			InvalidNameException {
+		_name = name;
+	}
+
+	@Override
 	public Map<String, String> getProperties() {
 		return Collections.unmodifiableMap(_properties);
+	}
+
+	@Override
+	public void setProperties(Map<String, String> properties)
+			throws IllegalStateException, InvalidPropertyException,
+			MissingPropertyException {
+		_properties = properties;		
+	}
+
+	@Override
+	public DataFlow getDataFlow() {
+		return _dataFlow;
+	}
+
+	@Override
+	public void setDataFlow(DataFlow dataFlow) throws IllegalStateException,
+			InvalidDataFlowException {
+		_dataFlow = dataFlow;
 	}
 
 	public void produce() {

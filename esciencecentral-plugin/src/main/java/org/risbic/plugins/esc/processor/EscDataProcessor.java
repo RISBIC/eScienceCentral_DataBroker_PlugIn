@@ -6,8 +6,16 @@
 package org.risbic.plugins.esc.processor;
 
 import com.arjuna.databroker.data.DataConsumer;
+import com.arjuna.databroker.data.DataFlow;
 import com.arjuna.databroker.data.DataProcessor;
 import com.arjuna.databroker.data.DataProvider;
+import com.arjuna.databroker.data.IllegalStateException;
+import com.arjuna.databroker.data.InvalidDataFlowException;
+import com.arjuna.databroker.data.InvalidNameException;
+import com.arjuna.databroker.data.InvalidPropertyException;
+import com.arjuna.databroker.data.MissingPropertyException;
+import com.arjuna.databroker.data.jee.annotation.DataConsumerInjection;
+import com.arjuna.databroker.data.jee.annotation.DataProviderInjection;
 import com.connexience.api.StorageClient;
 import com.connexience.api.WorkflowClient;
 import com.connexience.api.model.EscDocument;
@@ -15,8 +23,6 @@ import com.connexience.api.model.EscDocumentVersion;
 import com.connexience.api.model.EscFolder;
 import com.connexience.api.model.EscWorkflow;
 import com.connexience.api.model.EscWorkflowInvocation;
-import org.risbic.plugins.esc.intraconnect.SimpleConsumer;
-import org.risbic.plugins.esc.intraconnect.SimpleProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,27 +52,55 @@ public class EscDataProcessor implements DataProcessor {
 
 	public static final String RESULTSFILENAME_PROPERTYNAME = "Results File Name";
 
-	private final String _name;
+	private String _name;
 
-	private final Map<String, String> _properties;
+	private Map<String, String> _properties;
+	
+	private DataFlow _dataFlow;
 
-	private final DataConsumer<String> _consumer;
+	@DataConsumerInjection(methodName="consume")
+	private DataConsumer<String> _consumer;
 
-	private final DataProvider<String> _provider;
+	@DataProviderInjection
+	private DataProvider<String> _provider;
 
 	public EscDataProcessor(String name, Map<String, String> properties) {
 		_name = name;
 		_properties = properties;
-		_consumer = new SimpleConsumer<>(this, "consume", String.class);
-		_provider = new SimpleProvider<>(this);
 	}
 
+	@Override
 	public String getName() {
 		return _name;
 	}
 
+	@Override
+	public void setName(String name) throws IllegalStateException,
+			InvalidNameException {
+		_name = name;
+	}
+
+	@Override
 	public Map<String, String> getProperties() {
 		return Collections.unmodifiableMap(_properties);
+	}
+
+	@Override
+	public void setProperties(Map<String, String> properties)
+			throws IllegalStateException, InvalidPropertyException,
+			MissingPropertyException {
+		_properties = properties;		
+	}
+
+	@Override
+	public DataFlow getDataFlow() {
+		return _dataFlow;
+	}
+
+	@Override
+	public void setDataFlow(DataFlow dataFlow) throws IllegalStateException,
+			InvalidDataFlowException {
+		_dataFlow = dataFlow;
 	}
 
 	public void consume(String data) {
@@ -106,7 +140,7 @@ public class EscDataProcessor implements DataProcessor {
 				EscWorkflowInvocation workflowInvocation = workflowClient.executeWorkflowOnDocument(workflow.getId(), documentVersion.getDocumentRecordId());
 
 				// Poll until this workflow finishes (no timeout at the moment)
-				while (workflowInvocation.getStatus().equals("Running") || workflowInvocation.getStatus().equals("Queued") || workflowInvocation.getStatus().equals("Debugging")) {
+				while (workflowInvocation.isInProgress()) {
 					logger.fine("Status = " + workflowInvocation.getStatus());
 					workflowInvocation = workflowClient.getInvocation(workflowInvocation.getId());
 
