@@ -37,8 +37,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class EscDataProcessor implements DataProcessor {
-	private static final Logger logger = Logger.getLogger(EscDataProcessor.class.getName());
+public class EscDocumentDataProcessor implements DataProcessor {
+	private static final Logger logger = Logger.getLogger(EscDocumentDataProcessor.class.getName());
 
 	public static final String SERVERHOST_PROPERTYNAME = "Server Host";
 
@@ -64,7 +64,7 @@ public class EscDataProcessor implements DataProcessor {
 	@DataProviderInjection
 	private DataProvider<String> _provider;
 
-	public EscDataProcessor(String name, Map<String, String> properties) {
+	public EscDocumentDataProcessor(String name, Map<String, String> properties) {
 		_name = name;
 		_properties = properties;
 	}
