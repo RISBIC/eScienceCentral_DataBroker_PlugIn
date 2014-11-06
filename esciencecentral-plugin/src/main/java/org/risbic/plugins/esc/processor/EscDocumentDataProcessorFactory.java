@@ -20,12 +20,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class EscDataProcessorFactory implements DataFlowNodeFactory {
+public class EscDocumentDataProcessorFactory implements DataFlowNodeFactory {
 	private String _name;
 
 	private Map<String, String> _properties;
 
-	public EscDataProcessorFactory(String name, Map<String, String> properties) {
+	public EscDocumentDataProcessorFactory(String name, Map<String, String> properties) {
 		_name = name;
 		_properties = properties;
 	}

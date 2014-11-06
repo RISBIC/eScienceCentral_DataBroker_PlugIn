@@ -6,7 +6,7 @@
 package org.risbic.plugins.esc;
 
 import com.arjuna.databroker.data.DataFlowNodeFactoryInventory;
-import org.risbic.plugins.esc.processor.EscDataProcessorFactory;
+import org.risbic.plugins.esc.processor.EscDocumentDataProcessorFactory;
 import org.risbic.plugins.esc.service.dataset.EscDataSetDataServiceFactory;
 import org.risbic.plugins.esc.service.file.EscFileDataServiceFactory;
 import org.risbic.plugins.esc.source.dataset.EscDataSetDataSourceFactory;
@@ -37,7 +37,7 @@ public class EscFactoriesSetup {
 
 	@PostConstruct
 	public void setup() {
-		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(new EscDataProcessorFactory(PROCESSOR_FACTORY_NAME, Collections.<String, String>emptyMap()));
+		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(new EscDocumentDataProcessorFactory(PROCESSOR_FACTORY_NAME, Collections.<String, String>emptyMap()));
 		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(new EscFileDataSourceFactory(FILE_SOURCE_FACTORY_NAME, Collections.<String, String>emptyMap()));
 		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(new EscFileDataServiceFactory(FILE_SERVICE_FACTORY_NAME, Collections.<String, String>emptyMap()));
 		_dataFlowNodeFactoryInventory.addDataFlowNodeFactory(new EscDataSetDataSourceFactory(DATASET_SOURCE_FACTORY_NAME, Collections.<String, String>emptyMap()));
