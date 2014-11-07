@@ -58,12 +58,11 @@ public class EscCallableDataProcessorFactory implements DataFlowNodeFactory {
 	public <T extends DataFlowNode> List<String> getPropertyNames(Class<T> dataFlowNodeClass, Map<String, String> metaProperties) throws InvalidClassException, InvalidMetaPropertyException, MissingMetaPropertyException {
 		List<String> propertyNames = new LinkedList<>();
 
-		propertyNames.add(EscDocumentDataProcessor.SERVERHOST_PROPERTYNAME);
-		propertyNames.add(EscDocumentDataProcessor.SERVERPORT_PROPERTYNAME);
-		propertyNames.add(EscDocumentDataProcessor.USERNAME_PROPERTYNAME);
-		propertyNames.add(EscDocumentDataProcessor.USERPASSWORD_PROPERTYNAME);
-		propertyNames.add(EscDocumentDataProcessor.WORKFLOWNAME_PROPERTYNAME);
-		propertyNames.add(EscDocumentDataProcessor.RESULTSFILENAME_PROPERTYNAME);
+		propertyNames.add(EscCallableDataProcessor.SERVERHOST_PROPERTYNAME);
+		propertyNames.add(EscCallableDataProcessor.SERVERPORT_PROPERTYNAME);
+		propertyNames.add(EscCallableDataProcessor.USERNAME_PROPERTYNAME);
+		propertyNames.add(EscCallableDataProcessor.USERPASSWORD_PROPERTYNAME);
+		propertyNames.add(EscCallableDataProcessor.WORKFLOWNAME_PROPERTYNAME);
 
 		return propertyNames;
 	}
@@ -72,7 +71,7 @@ public class EscCallableDataProcessorFactory implements DataFlowNodeFactory {
 	@Override
 	public <T extends DataFlowNode> T createDataFlowNode(String name, Class<T> dataFlowNodeClass, Map<String, String> metaProperties, Map<String, String> properties) throws InvalidNameException, InvalidPropertyException, MissingPropertyException {
 		if (dataFlowNodeClass.isAssignableFrom(EscDocumentDataProcessor.class)) {
-			return (T) new EscDocumentDataProcessor(name, properties);
+			return (T) new EscCallableDataProcessor(name, properties);
 		} else {
 			return null;
 		}
